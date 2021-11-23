@@ -1,4 +1,4 @@
-package com.example.student.BSUIR.HealthyLifestyleBot.Service;
+package com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators;
 
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.User;
 
@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class BMICalculator {
 
-    public static Float calculateBMI(User user){
+    public static float calculateBMI(User user){
         return (float) (user.getWeight() / Math.pow(user.getHeight(),2));
     }
 
