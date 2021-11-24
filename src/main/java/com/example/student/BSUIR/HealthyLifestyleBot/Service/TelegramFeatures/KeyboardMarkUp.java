@@ -1,6 +1,5 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures;
 
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -9,7 +8,7 @@ import java.util.ResourceBundle;
 
 public class KeyboardMarkUp {
 
-    public static ReplyKeyboardMarkup initButtons(ResourceBundle resourceBundle, String nameButton){
+    public static ReplyKeyboardMarkup initButtons(ResourceBundle resourceBundle, String nameButton) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
         ArrayList<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -20,11 +19,12 @@ public class KeyboardMarkUp {
 
         if (nameButton.equals(resourceBundle.getString("menu.desc")))
         {
-            keyboardFirstRow.add(resourceBundle.getString("menu.all.info"));
-            keyboardFirstRow.add(resourceBundle.getString("menu.show.calc"));
+            keyboardFirstRow.add(resourceBundle.getString("menu.all.info") + "\t\u2139");
+            keyboardFirstRow.add(resourceBundle.getString("menu.show.calc") + "\t\uD83D\uDDA9");
 
-            keyboardSecondRow.add(resourceBundle.getString("menu.upd.info"));
-            keyboardSecondRow.add(resourceBundle.getString("menu.show.sp"));
+            keyboardSecondRow.add(resourceBundle.getString("menu.upd.info") + "\t\uD83D\uDCC0");
+            keyboardSecondRow.add(resourceBundle.getString("menu.show.sp") + "\t\uD83C\uDFD0");
+            keyboardSecondRow.add(resourceBundle.getString("menu.add.user") + "\t\u2705");
 
             keyboardRows.add(keyboardFirstRow);
             keyboardRows.add(keyboardSecondRow);
@@ -33,7 +33,6 @@ public class KeyboardMarkUp {
 
             return replyKeyboardMarkup;
         }
-
         return replyKeyboardMarkup;
     }
 
