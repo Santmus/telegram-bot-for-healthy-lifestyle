@@ -40,7 +40,6 @@ public class InlineKeyboard {
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.isotonic")).callbackData("sp_isotonic").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.vitamin_complexes")).callbackData("sp_vitamine_comp").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.testosterone")).callbackData("sp_testosterone").build()));
-
         return lists;
     }
 }

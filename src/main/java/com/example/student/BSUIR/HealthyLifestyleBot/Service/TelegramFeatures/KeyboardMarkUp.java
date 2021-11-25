@@ -17,8 +17,7 @@ public class KeyboardMarkUp {
 
         setSettings(replyKeyboardMarkup);
 
-        if (nameButton.equals(resourceBundle.getString("menu.desc")))
-        {
+        if (nameButton.equals(resourceBundle.getString("menu.desc"))) {
             keyboardFirstRow.add(resourceBundle.getString("menu.all.info") + "\t\u2139");
             keyboardFirstRow.add(resourceBundle.getString("menu.show.calc") + "\t\uD83D\uDDA9");
 
@@ -33,6 +32,22 @@ public class KeyboardMarkUp {
 
             return replyKeyboardMarkup;
         }
+        else if (nameButton.equals(resourceBundle.getString("user.change"))) {
+
+            keyboardFirstRow.add(resourceBundle.getString("user.name"));
+            keyboardFirstRow.add(resourceBundle.getString("user.surname"));
+            keyboardFirstRow.add(resourceBundle.getString("user.age"));
+            keyboardSecondRow.add(resourceBundle.getString("user.height"));
+            keyboardSecondRow.add(resourceBundle.getString("user.weight"));
+            keyboardSecondRow.add(resourceBundle.getString("user.disease"));
+
+            keyboardRows.add(keyboardFirstRow);
+            keyboardRows.add(keyboardSecondRow);
+            replyKeyboardMarkup.setKeyboard(keyboardRows);
+
+            return replyKeyboardMarkup;
+
+        }
         return replyKeyboardMarkup;
     }
 
@@ -42,4 +57,13 @@ public class KeyboardMarkUp {
         replyKeyboardMarkup.setOneTimeKeyboard(true);
     }
 
+
+    /*
+            keyboardFirstRow.add(resourceBundle.getString("menu.all.info") + "\t\u2139");
+            keyboardFirstRow.add(resourceBundle.getString("menu.show.calc") + "\t\uD83D\uDDA9");
+
+            keyboardSecondRow.add(resourceBundle.getString("menu.upd.info") + "\t\uD83D\uDCC0");
+            keyboardSecondRow.add(resourceBundle.getString("menu.show.sp") + "\t\uD83C\uDFD0");
+            keyboardSecondRow.add(resourceBundle.getString("menu.add.user") + "\t\u2705");
+    */
 }
