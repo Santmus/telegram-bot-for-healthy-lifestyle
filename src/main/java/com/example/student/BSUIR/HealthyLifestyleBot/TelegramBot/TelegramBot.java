@@ -1,6 +1,7 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.TelegramBot;
 
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.User;
+import com.example.student.BSUIR.HealthyLifestyleBot.Database.Configs.DatabaseHandler;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.StartMessage;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.InlineKeyboard;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.KeyboardMarkUp;
@@ -36,6 +37,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private ResourceBundle localeLanguage;
 
     private User user = new User();
+    private DatabaseHandler databaseHandler;
 
     String botUsername;
     String botToken;
@@ -59,8 +61,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                handleCommand(update.getMessage());
            }
            if (update.hasMessage()){
-               String text = update.getMessage().getText();
-               handleMessage(update.getMessage(), text);
+               handleMessage(update.getMessage());
            }
           } catch (TelegramApiRequestException e){
            log.info("User send a lot of message" + update.getMessage());
@@ -68,10 +69,10 @@ public class TelegramBot extends TelegramLongPollingBot {
        }
     }
 
-    private void handleMessage(Message message, String text) throws TelegramApiException {
+    private void handleMessage(Message message) throws TelegramApiException {
         log.info("We get message: " + message.getText());
 
-        switch (text){
+        switch (message.getText()){
             case "Show all user information ℹ" : {
                 localeLanguage = ResourceBundle.getBundle("application", new Locale("en", "EN"));
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(user.showAllInformationAboutUser(localeLanguage)).build());
@@ -96,8 +97,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
             case "Add user information ✅": {
                 localeLanguage = ResourceBundle.getBundle("application", new Locale("en", "EN"));
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(localeLanguage.getString("auth.name")).build());
+
                 break;
             }
+
 
             case "Показать всю информацию о пользователе ℹ":{
                 localeLanguage = ResourceBundle.getBundle("application", new Locale("ru", "RU"));
@@ -152,11 +156,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 localeLanguage = ResourceBundle.getBundle("application", new Locale("jp", "JP"));
                 break;
             }
-            default:
-                log.info("Unknown message which no handler");
-                break;
         }
     }
+
 
     private void handleCallBack(CallbackQuery callbackQuery) throws TelegramApiException {
         Message message = callbackQuery.getMessage();
@@ -197,26 +199,30 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.info("We get command:  " + command);
             switch (command) {
                 case "/start": {
-                        List<List<InlineKeyboardButton>> languageButton = InlineKeyboard.languageList();
-                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(resourceBundle.getString("application.language")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(languageButton).build()).build());
-                        break;
+                    List<List<InlineKeyboardButton>> languageButton = InlineKeyboard.languageList();
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(resourceBundle.getString("application.language")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(languageButton).build()).build());
+                    break;
                 }
                 case "/get_all_calculators": {
-                         List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.calculatorList(basicLanguage);
-                         execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguage.getString("calculator.menu")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
-                         break;
+                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.calculatorList(basicLanguage);
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguage.getString("calculator.menu")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
+                    break;
                 }    // обработать команды для калькулятора
-                case "/show_information_about_user":{
-                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(user.showAllInformationAboutUser(basicLanguage)).build());
-                        break;
+                case "/show_information_about_user": {
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(user.showAllInformationAboutUser(basicLanguage)).build());
+                    break;
                 } // брать данные у пользователя
                 case "/show_sport_nutritions": {
-                        List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(basicLanguage);
-                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguage.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
-                        break;
-                    } // обработать команды для калькулятора
-                }
+                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(basicLanguage);
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguage.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
+                    break;
+                } // обработать команды для калькулятора
+                case "/set_information_about_user": {
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguage.getString("user.change")).replyMarkup(KeyboardMarkUp.initButtons(basicLanguage, basicLanguage.getString("user.change"))).build());
+                    break;
+                } // обработать команды для калькулятора
             }
+        }
     }
 
 

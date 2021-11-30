@@ -1,13 +1,16 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.Data;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 @Data
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
+
     private String name;
     private String surname;
 
@@ -16,18 +19,8 @@ public class User {
     private float height;
     private float weight;
 
-    private ArrayList<String> disease;
+    private String disease;
 
-    public User(String name, String surname, int age, float height, float weight, ArrayList<String> disease) {
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.height = height;
-        this.weight = weight;
-        this.disease = disease;
-    }
-
-    public User(){}
 
     public String showAllInformationAboutUser(ResourceBundle resourceBundle){
         return resourceBundle.getString("user.name") + ":\t" + getName() + "\n" +
