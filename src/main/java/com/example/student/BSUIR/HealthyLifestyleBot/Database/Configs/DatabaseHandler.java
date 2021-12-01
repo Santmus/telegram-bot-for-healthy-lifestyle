@@ -2,7 +2,6 @@ package com.example.student.BSUIR.HealthyLifestyleBot.Database.Configs;
 
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.User;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.UserTokenHandler;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.sql.*;
@@ -89,7 +88,7 @@ public class DatabaseHandler {
         System.out.println("===========================================");
     }
 
-    public void updateName(Object value, String nameData) throws SQLException, ClassNotFoundException {
+    public void updateName(Message message,Object value, String nameData) throws SQLException, ClassNotFoundException {
         connection = getDbConnection();
 
         String SQL = "UPDATE project_healthy_lifestyle_users SET " + nameData +  " = ? WHERE user_id = ?";
@@ -113,7 +112,7 @@ public class DatabaseHandler {
             }
         }
 
-        preparedStatement.setLong(2, 26);
+        preparedStatement.setLong(2, message.getFrom().getId());
         preparedStatement.executeUpdate();
     }
 

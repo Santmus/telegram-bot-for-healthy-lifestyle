@@ -1,7 +1,9 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.TelegramBot;
 
+import com.example.student.BSUIR.HealthyLifestyleBot.Data.SportNutrition;
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.User;
 import com.example.student.BSUIR.HealthyLifestyleBot.Database.Configs.DatabaseHandler;
+import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.HtmlSiteParser;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.StartMessage;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.InlineKeyboard;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.KeyboardMarkUp;
@@ -187,6 +189,87 @@ public class TelegramBot extends TelegramLongPollingBot {
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(localeLanguage.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(localeLanguage, localeLanguage.getString("menu.desc"))).build());
                 break;
             }
+
+
+            case "sp_amino_acids":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\amino_acid.png"), message, this, localeLanguage.getString("sport.nutrition.amino_acids"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.AMINO_ACIDS, this, message, localeLanguage);
+                break;
+            }
+            case "sp_anticatabolic":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\anticabolic.png"), message, this, localeLanguage.getString("sport.nutrition.anticatabolic"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ANTICATABOLIC, this, message, localeLanguage);
+                break;
+            }
+            case "sp_en_drink":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\energy_drink.png"), message, this, localeLanguage.getString("sport.nutrition.energy.drink"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ENERGY_DRINK, this, message, localeLanguage);
+                break;
+            }
+            case "sp_creatin":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\creatine.png"), message, this, localeLanguage.getString("sport.nutrition.creatin "));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.CREATIN, this, message, localeLanguage);
+                break;
+            }
+            case "sp_gr_hormone":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\booster.png"), message, this, localeLanguage.getString("sport.nutrition.growth_hormone"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.GROWTH_HORMONE, this, message, localeLanguage);
+                break;
+            }
+            case "sp_fat_burners":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\fat_burner.png"), message, this, localeLanguage.getString("sport.nutrition.fat_burners"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.FAT_BURNERS, this, message, localeLanguage);
+                break;
+            }
+            case "sp_collagen":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\collagen.png"), message, this, localeLanguage.getString("sport.nutrition.collagen"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.COLLAGEN, this, message, localeLanguage);
+                break;
+            }
+            case "sp_glucosamine":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\glucosamine.png"), message, this, localeLanguage.getString("sport.nutrition.glucosamine"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.GLUCOSAMINE, this, message, localeLanguage);
+                break;
+            }
+            case "sp_isotonic":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\isotonic.png"), message, this, localeLanguage.getString("sport.nutrition.isotonic"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ISOTONIC, this, message, localeLanguage);
+                break;
+            }
+            case "sp_vitamine_comp":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\vitamine.png"), message, this, localeLanguage.getString("sport.nutrition.vitamin_complexes"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.VITAMINE_COMPLEX, this, message, localeLanguage);
+                break;
+            }
+            case "sp_testosterone":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\testosterone.png"), message, this, localeLanguage.getString("sport.nutrition.testosterone"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.TESTOSTERONE, this, message, localeLanguage);
+                break;
+            }
+            case "sp_meal_replace":{
+                checkLanguage(message);
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\meal.png"), message, this, localeLanguage.getString("sport.nutrition.meal_replacemen"));
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.MEAL_REPLACE, this, message, localeLanguage);
+                break;
+            }
+
+            case "return": {
+                checkLanguage(message);
+                List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(localeLanguage);
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(localeLanguage.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
+                break;
+            }
         }
     }
 
@@ -216,7 +299,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(basicLanguage);
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguage.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
                     break;
-                } // обработать команды для калькулятора
+                }
                 case "/set_information_about_user": {
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguage.getString("user.change")).replyMarkup(KeyboardMarkUp.initButtons(basicLanguage, basicLanguage.getString("user.change"))).build());
                     break;
@@ -225,7 +308,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-
+    private void checkLanguage(Message message){
+        if ("Select the type of sports nutrition you want to know:".equals(message.getText())){
+            localeLanguage = ResourceBundle.getBundle("application", new Locale("en", "EN"));
+        } else if ("Выберите тип спортивного питания, которое вы хотите узнать:".equals(message.getText())){
+            localeLanguage = ResourceBundle.getBundle("application", new Locale("ru", "RU"));
+        } else if ("知りたいスポーツ栄養の種類を選択してください:".equals(message.getText())){
+            localeLanguage = ResourceBundle.getBundle("application", new Locale("jp", "JP"));
+        }
+    }
 
 
     

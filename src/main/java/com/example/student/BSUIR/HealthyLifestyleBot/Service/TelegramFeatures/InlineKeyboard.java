@@ -42,4 +42,13 @@ public class InlineKeyboard {
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.testosterone")).callbackData("sp_testosterone").build()));
         return lists;
     }
+
+    public static List<List<InlineKeyboardButton>> functionalOfSportNutritionList(ResourceBundle resourceBundle) {
+        lists = new ArrayList<>(3);
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.dowload_list")).callbackData("dowload_list").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.random_product")).callbackData("random_product").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.return")).callbackData("return").build()));
+        return lists;
+    }
+
 }

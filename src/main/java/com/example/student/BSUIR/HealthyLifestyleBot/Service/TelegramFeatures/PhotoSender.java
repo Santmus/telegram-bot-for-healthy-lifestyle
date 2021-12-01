@@ -14,4 +14,9 @@ public class PhotoSender {
         InputFile inputFile = new InputFile(file);
         telegramBot.execute(SendPhoto.builder().chatId(message.getChatId().toString()).photo(inputFile).build());
     }
+
+    public static void sendPhoto(File file, Message message, TelegramBot telegramBot, String text) throws TelegramApiException {
+        InputFile inputFile = new InputFile(file);
+        telegramBot.execute(SendPhoto.builder().chatId(message.getChatId().toString()).caption(text).photo(inputFile).build());
+    }
 }
