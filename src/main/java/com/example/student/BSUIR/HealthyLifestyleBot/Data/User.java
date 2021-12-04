@@ -21,7 +21,6 @@ public class User {
 
     private String disease;
 
-
     public String showAllInformationAboutUser(ResourceBundle resourceBundle){
         return resourceBundle.getString("user.name") + ":\t" + getName() + "\n" +
                 resourceBundle.getString("user.surname")+ ":\t" + getSurname() + "\n" +

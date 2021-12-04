@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 @Slf4j
 public class DatabaseHandler {
 
+    // message.getFrom().getId() - проверить
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
     private Connection connection;
 
@@ -26,7 +27,9 @@ public class DatabaseHandler {
 
     public void addUserData(User user, Message message) throws SQLException, ClassNotFoundException {
         connection = getDbConnection();
-        String SQL = "INSERT INTO project_healthy_lifestyle_users (user_id, user_name, user_surname, user_age, user_height, user_weight, user_list_of_disease) VALUE (?, ?, ?, ?, ?, ?, ?)";
+        String SQL = "INSERT INTO project_healthy_lifestyle_users " +
+                "(user_id, user_name, user_surname, user_age, user_height, user_weight, user_list_of_disease)" +
+                " VALUE (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
 
         log.info("MySQL query is: " + SQL);
@@ -74,6 +77,10 @@ public class DatabaseHandler {
         log.info("We show all information user in database");
 
         return infoUser.showAllInformationAboutUser(localBundle);
+    }
+
+    public void getSingleData(User user, Message message){
+
     }
 
     private void consoleInformation(User user){

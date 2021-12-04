@@ -106,7 +106,7 @@ public class HtmlSiteParser {
         assert document != null;
         Elements listInfo = document.select("div#main.cat");
         for (Element element : listInfo.select("p")) {
-            //System.out.println(element.text());
+
             try {
                 telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(element.text()).build());
             } catch (TelegramApiException e) {
@@ -119,7 +119,7 @@ public class HtmlSiteParser {
             }
         }
         List<List<InlineKeyboardButton>> listOfHandler = InlineKeyboard.functionalOfSportNutritionList(resourceBundle);
-        telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text("sd").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfHandler).build()).build());
+        telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(resourceBundle.getString("sport.nutrition.menu.1")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfHandler).build()).build());
     }
 
 }
