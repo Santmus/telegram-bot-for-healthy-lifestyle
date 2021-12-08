@@ -10,17 +10,17 @@ import java.util.ResourceBundle;
 @Slf4j
 public class DatabaseHandler {
 
-    // message.getFrom().getId() - проверить
+
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
     private Connection connection;
 
     public Connection getDbConnection() throws ClassNotFoundException, SQLException {
-        String connection = resourceBundle.getString("spring.datasource.url") + resourceBundle.getString("spring.datasourse.databaseName");
+        String connection = resourceBundle.getString("spring.datasource.url");
         Class.forName(resourceBundle.getString("spring.datasource.driver-class-name"));
 
         Connection dbConnection = DriverManager.getConnection(connection, resourceBundle.getString("spring.datasource.username"), resourceBundle.getString("spring.datasource.password"));
 
-        log.info("The connection was successful:" + connection + resourceBundle.getString("spring.datasource.username") + resourceBundle.getString("spring.datasource.password")) ;
+        log.info("The connection was successful: " + connection + " " + resourceBundle.getString("spring.datasource.username") + " " + resourceBundle.getString("spring.datasource.password")) ;
 
         return dbConnection;
     }
@@ -34,7 +34,7 @@ public class DatabaseHandler {
 
         log.info("MySQL query is: " + SQL);
 
-        preparedStatement.setLong(1, message.getFrom().getId()); // проверить
+        preparedStatement.setLong(1, message.getFrom().getId());
         preparedStatement.setString(2, user.getName());
         preparedStatement.setString(3, user.getSurname());
         preparedStatement.setInt(4, user.getAge());
@@ -67,11 +67,12 @@ public class DatabaseHandler {
         resultSet.getString(7);
 
         User infoUser = new User(resultSet.getString(2),
-        resultSet.getString(3),
-        resultSet.getInt(4),
-        resultSet.getFloat(5),
-        resultSet.getFloat(6),
-        resultSet.getString(7));
+                resultSet.getString(3),
+                resultSet.getInt(4),
+                resultSet.getFloat(5),
+                resultSet.getFloat(6),
+                resultSet.getString(7));
+
         consoleInformation(infoUser);
 
         log.info("We show all information user in database");
@@ -79,28 +80,18 @@ public class DatabaseHandler {
         return infoUser.showAllInformationAboutUser(localBundle);
     }
 
-    public void getSingleData(User user, Message message){
-
-    }
-
-    private void consoleInformation(User user){
-        System.out.println("===========================================");
-        System.out.println("Information about user: ");
-        System.out.println(user.getName());
-        System.out.println(user.getSurname());
-        System.out.println(user.getAge());
-        System.out.println(user.getHeight());
-        System.out.println(user.getWeight());
-        System.out.println(user.getDisease());
-        System.out.println("===========================================");
-    }
-
-    public void updateName(Message message,Object value, String nameData) throws SQLException, ClassNotFoundException {
+    public Float getDataSizePerson(Message message, String nameData) throws SQLException, ClassNotFoundException {
         connection = getDbConnection();
 
-        String SQL = "UPDATE project_healthy_lifestyle_users SET " + nameData +  " = ? WHERE user_id = ?";
-
+        String SQL = "SELECT " +  nameData + " FROM project_healthy_lifestyle_users WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+
+        preparedStatement.setLong(1, message.getFrom().getId());
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet.getFloat(1);
+    }
+
+    private void chooseValue(String nameData, Object value, PreparedStatement preparedStatement) throws SQLException {
         switch (nameData){
             case "user_name":
             case "user_surname":
@@ -118,6 +109,28 @@ public class DatabaseHandler {
                 break;
             }
         }
+    }
+
+    private void consoleInformation(User user){
+        System.out.println("===========================================");
+        System.out.println("Information about user: ");
+        System.out.println(user.getName());
+        System.out.println(user.getSurname());
+        System.out.println(user.getAge());
+        System.out.println(user.getHeight());
+        System.out.println(user.getWeight());
+        System.out.println(user.getDisease());
+        System.out.println("===========================================");
+    }
+
+    public void updateName(Message message, Object value, String nameData) throws SQLException, ClassNotFoundException {
+        connection = getDbConnection();
+
+        String SQL = "UPDATE project_healthy_lifestyle_users SET " + nameData +  " = ? WHERE user_id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+
+        chooseValue(nameData, value, preparedStatement);
 
         preparedStatement.setLong(2, message.getFrom().getId());
         preparedStatement.executeUpdate();

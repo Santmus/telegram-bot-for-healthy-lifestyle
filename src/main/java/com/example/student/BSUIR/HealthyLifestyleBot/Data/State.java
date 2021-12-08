@@ -1,6 +1,8 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.Data;
 
-public enum SportNutrition {
+public enum State {
+    NONE_STATE,
+    MENU,
     AMINO_ACIDS,
     ANTICATABOLIC,
     ENERGY_DRINK,

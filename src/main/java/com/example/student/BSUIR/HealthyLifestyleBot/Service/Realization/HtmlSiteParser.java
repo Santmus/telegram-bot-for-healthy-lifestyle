@@ -1,6 +1,6 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization;
 
-import com.example.student.BSUIR.HealthyLifestyleBot.Data.SportNutrition;
+import com.example.student.BSUIR.HealthyLifestyleBot.Data.State;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.InlineKeyboard;
 import com.example.student.BSUIR.HealthyLifestyleBot.TelegramBot.TelegramBot;
 import lombok.SneakyThrows;
@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 @Slf4j
 public class HtmlSiteParser {
 
-    public static void parseSportNutritionInformation(SportNutrition sportNutrition, TelegramBot telegramBot, Message message, ResourceBundle localeLanguage) {
+    public static void parseSportNutritionInformation(State sportNutrition, TelegramBot telegramBot, Message message, ResourceBundle localeLanguage) {
         switch (sportNutrition){
             case AMINO_ACIDS:{
                 log.info("User of telegram bot choose amino acids");

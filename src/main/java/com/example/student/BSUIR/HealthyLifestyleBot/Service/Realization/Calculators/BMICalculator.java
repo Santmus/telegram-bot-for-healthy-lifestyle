@@ -6,8 +6,8 @@ import java.util.ResourceBundle;
 
 public class BMICalculator {
 
-    public static float calculateBMI(User user){
-        return (float) (user.getWeight() / Math.pow(user.getHeight(),2));
+    public static float calculateBMI(float weight, float height){
+        return (float) (weight / Math.pow(height, 2));
     }
 
     public static String info(float value, ResourceBundle resourceBundle){
