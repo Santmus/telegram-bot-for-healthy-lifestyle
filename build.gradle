@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.example.student.BSUIR'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = "14"
 
 configurations {
 	compileOnly {
@@ -33,3 +33,4 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+targetCompatibility = JavaVersion.VERSION_14

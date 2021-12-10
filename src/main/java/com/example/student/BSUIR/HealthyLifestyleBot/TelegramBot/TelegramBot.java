@@ -10,10 +10,7 @@ import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.Ch
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.InlineKeyboard;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.KeyboardMarkUp;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.PhotoSender;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.SneakyThrows;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -53,7 +50,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String botUsername;
     private String botToken;
 
-
     public TelegramBot(ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
 
@@ -67,8 +63,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        log.info("We get a new Update. This updateID: " + update.getUpdateId());
+        log.info("Bot get a new Update. This updateID: " + update.getUpdateId());
         log.info("Telegram bot has state: " + state.toString());
+
        try {
            if (update.hasCallbackQuery()) {
                handleCallBack(update.getCallbackQuery());
@@ -87,8 +84,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     private void handleMessage(Message message) throws TelegramApiException {
-        log.info("We get message: " + message.getText());
+        log.info("Bot get message: " + message.getText());
         log.info(String.valueOf(message.getFrom().getId()));
+        log.info("Telegram bot has state: " + state.toString());
 
         switch (message.getText()){
             case "Show all user information ℹ" : {
@@ -137,6 +135,37 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
             }
 
+            case "Имя": {
+                state = State.SET_USER_NAME;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Введите новое имя пользователя").build());
+                break;
+            }
+            case "Фамилия": {
+                state = State.SET_USER_SURNAME;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Введите фамилию пользователя").build());
+                break;
+            }
+            case "Возраст": {
+                state = State.SET_USER_AGE;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Введите возраст пользователя").build());
+                break;
+            }
+            case "Рост": {
+                state = State.SET_USER_HEIGHT;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Введите рост пользователя").build());
+                break;
+            }
+            case "Вес": {
+                state = State.SET_USER_WEIGHT;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Введите вес пользователя").build());
+                break;
+            }
+            case "Болезни": {
+                state = State.SET_USER_DISEASE;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Введите болезни пользователя").build());
+                break;
+            }
+
             case "すべてのユーザー情報を表示する ℹ":{
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, localeLanguageJP)).build());
                 break;
@@ -159,16 +188,59 @@ public class TelegramBot extends TelegramLongPollingBot {
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(localeLanguageJP.getString("auth.name")).build());
                 break;
             }
+            default:
+                if (state.equals(State.SET_USER_NAME)) {
+                    log.info("New user name: " + message.getText());
+                    databaseHandler.updateName(message, message.getText(), "user_name");
+                    changeMessageRu(message);
+                    state = State.MENU;
+                }
+                else if(state.equals(State.SET_USER_SURNAME)){
+                    log.info("New user surname: " + message.getText());
+                    databaseHandler.updateName(message, message.getText(), "user_surname");
+                    changeMessageRu(message);
+                    state = State.MENU;
+                }
+                else if(state.equals(State.SET_USER_AGE)){
+                    log.info("New user age: " + message.getText());
+                    databaseHandler.updateName(message, message.getText(), "user_age");
+                    changeMessageRu(message);
+                    state = State.MENU;
+                }
+                else if(state.equals(State.SET_USER_HEIGHT)){
+                    log.info("New user height: " + message.getText());
+                    databaseHandler.updateName(message, message.getText(), "user_height");
+                    changeMessageRu(message);
+                    state = State.MENU;
+                }
+                else if(state.equals(State.SET_USER_WEIGHT)){
+                    log.info("New user weight: " + message.getText());
+                    databaseHandler.updateName(message, message.getText(), "user_weight");
+                    changeMessageRu(message);
+                    state = State.MENU;
+                }
+                else if(state.equals(State.SET_USER_DISEASE)){
+                    log.info("New user disease: " + message.getText());
+                    databaseHandler.updateName(message, message.getText(), "user_list_of_disease");
+                    changeMessageRu(message);
+                    state = State.MENU;
+                }
+
         }
     }
 
+    private void changeMessageRu(Message message) throws TelegramApiException {
+        execute(SendMessage.builder().chatId(message.getChatId().toString()).text("Данные добавлены").replyMarkup(KeyboardMarkUp.initButtons(localeLanguageRU, localeLanguageRU.getString("menu.desc"))).build());
+    }
 
     @SneakyThrows
     private void handleCallBack(CallbackQuery callbackQuery) throws TelegramApiException {
         Message message = callbackQuery.getMessage();
         String value = callbackQuery.getData();
+
+
         log.info("Message is: " + message);
-        log.info("We get callback:  " + value);
+        log.info("Bot get callback:  " + value);
         switch (value) {
             case "ru": {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\bill.png"), message, this);
@@ -299,7 +371,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         Optional<MessageEntity> commandEntity = message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
         if (commandEntity.isPresent()) {
             String command = message.getText().substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
-            log.info("We get command:  " + command);
+            log.info("Bot get command:  " + command);
             switch (command) {
                 case "/start": {
                     List<List<InlineKeyboardButton>> languageButton = InlineKeyboard.languageList();

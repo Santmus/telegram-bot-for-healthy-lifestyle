@@ -34,7 +34,7 @@ public class DatabaseHandler {
 
         log.info("MySQL query is: " + SQL);
 
-        preparedStatement.setLong(1, message.getFrom().getId());
+        preparedStatement.setLong(1, message.getChatId());
         preparedStatement.setString(2, user.getName());
         preparedStatement.setString(3, user.getSurname());
         preparedStatement.setInt(4, user.getAge());
@@ -54,7 +54,7 @@ public class DatabaseHandler {
 
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
 
-        preparedStatement.setLong(1, message.getFrom().getId()); // проверить
+        preparedStatement.setLong(1, message.getChatId()); // проверить
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -83,15 +83,18 @@ public class DatabaseHandler {
     public Float getDataSizePerson(Message message, String nameData) throws SQLException, ClassNotFoundException {
         connection = getDbConnection();
 
+        System.out.println(nameData);
         String SQL = "SELECT " +  nameData + " FROM project_healthy_lifestyle_users WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
 
-        preparedStatement.setLong(1, message.getFrom().getId());
+        preparedStatement.setLong(1, message.getChatId());
+        System.out.println(message.getChatId());
         ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
         return resultSet.getFloat(1);
     }
 
-    private void chooseValue(String nameData, Object value, PreparedStatement preparedStatement) throws SQLException {
+    private void chooseValue(String nameData, String value, PreparedStatement preparedStatement) throws SQLException {
         switch (nameData){
             case "user_name":
             case "user_surname":
@@ -100,12 +103,12 @@ public class DatabaseHandler {
                 break;
             }
             case "user_age": {
-                preparedStatement.setInt(1, (Integer) value);
+                preparedStatement.setInt(1, Integer.parseInt(value));
                 break;
             }
             case "user_height":
             case "user_weight": {
-                preparedStatement.setFloat(1, (Float) value);
+                preparedStatement.setFloat(1, Float.parseFloat(value));
                 break;
             }
         }
@@ -123,7 +126,7 @@ public class DatabaseHandler {
         System.out.println("===========================================");
     }
 
-    public void updateName(Message message, Object value, String nameData) throws SQLException, ClassNotFoundException {
+    public void updateName(Message message, String value, String nameData) throws SQLException, ClassNotFoundException {
         connection = getDbConnection();
 
         String SQL = "UPDATE project_healthy_lifestyle_users SET " + nameData +  " = ? WHERE user_id = ?";
@@ -132,7 +135,7 @@ public class DatabaseHandler {
 
         chooseValue(nameData, value, preparedStatement);
 
-        preparedStatement.setLong(2, message.getFrom().getId());
+        preparedStatement.setLong(2, message.getChatId());
         preparedStatement.executeUpdate();
     }
 

@@ -3,6 +3,12 @@ package com.example.student.BSUIR.HealthyLifestyleBot.Data;
 public enum State {
     NONE_STATE,
     MENU,
+    SET_USER_NAME,
+    SET_USER_SURNAME,
+    SET_USER_AGE,
+    SET_USER_HEIGHT,
+    SET_USER_WEIGHT,
+    SET_USER_DISEASE,
     AMINO_ACIDS,
     ANTICATABOLIC,
     ENERGY_DRINK,
