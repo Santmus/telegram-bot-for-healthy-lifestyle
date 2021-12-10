@@ -83,15 +83,30 @@ public class DatabaseHandler {
     public Float getDataSizePerson(Message message, String nameData) throws SQLException, ClassNotFoundException {
         connection = getDbConnection();
 
-        System.out.println(nameData);
         String SQL = "SELECT " +  nameData + " FROM project_healthy_lifestyle_users WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
 
         preparedStatement.setLong(1, message.getChatId());
-        System.out.println(message.getChatId());
+
         ResultSet resultSet = preparedStatement.executeQuery();
         resultSet.next();
         return resultSet.getFloat(1);
+    }
+
+    public Long getIdUser(Message message) throws SQLException, ClassNotFoundException {
+        connection = getDbConnection();
+
+        String SQL = "SELECT user_id FROM project_healthy_lifestyle_users";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(SQL);
+        while (resultSet.next()){
+            long value = resultSet.getLong(1);
+
+            if (value == message.getChatId()){
+                return value;
+            }
+        }
+        return null;
     }
 
     private void chooseValue(String nameData, String value, PreparedStatement preparedStatement) throws SQLException {
