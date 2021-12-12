@@ -23,6 +23,7 @@ public class InlineKeyboard {
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.BMI")).callbackData("BMI Calculator").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.Daily.Calories")).callbackData("Daily Calorie Calculator").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.Burned.Calories")).callbackData("Calories Burned Calculator").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.return")).callbackData("return_main_menu").build()));
         return lists;
     }
 
@@ -40,6 +41,7 @@ public class InlineKeyboard {
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.isotonic")).callbackData("sp_isotonic").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.vitamin_complexes")).callbackData("sp_vitamine_comp").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.testosterone")).callbackData("sp_testosterone").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.return")).callbackData("return_main_menu").build()));
         return lists;
     }
 

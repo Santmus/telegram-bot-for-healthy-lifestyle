@@ -1,6 +1,7 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.Database.Configs;
 
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.User;
+import com.example.student.BSUIR.HealthyLifestyleBot.Exception.RangeExceededException;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -109,7 +110,8 @@ public class DatabaseHandler {
         return null;
     }
 
-    private void chooseValue(String nameData, String value, PreparedStatement preparedStatement) throws SQLException {
+    private void chooseValue(String nameData, String value, PreparedStatement preparedStatement) throws SQLException, RangeExceededException {
+        User checkData = new User();
         switch (nameData){
             case "user_name":
             case "user_surname":
@@ -118,11 +120,14 @@ public class DatabaseHandler {
                 break;
             }
             case "user_age": {
+                checkData.setAge(Integer.parseInt(value));
                 preparedStatement.setInt(1, Integer.parseInt(value));
                 break;
             }
             case "user_height":
             case "user_weight": {
+                if (nameData.equals("user_height")) checkData.setHeight(Float.parseFloat(value));
+                else checkData.setWeight(Float.parseFloat(value));
                 preparedStatement.setFloat(1, Float.parseFloat(value));
                 break;
             }
@@ -141,7 +146,7 @@ public class DatabaseHandler {
         System.out.println("===========================================");
     }
 
-    public void updateName(Message message, String value, String nameData) throws SQLException, ClassNotFoundException {
+    public void updateName(Message message, String value, String nameData) throws SQLException, ClassNotFoundException, RangeExceededException {
         connection = getDbConnection();
 
         String SQL = "UPDATE project_healthy_lifestyle_users SET " + nameData +  " = ? WHERE user_id = ?";
