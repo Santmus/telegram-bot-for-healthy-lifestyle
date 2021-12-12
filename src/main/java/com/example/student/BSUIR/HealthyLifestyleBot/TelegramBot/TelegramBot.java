@@ -1,11 +1,14 @@
 package com.example.student.BSUIR.HealthyLifestyleBot.TelegramBot;
 
+import com.example.student.BSUIR.HealthyLifestyleBot.Data.Activity;
+import com.example.student.BSUIR.HealthyLifestyleBot.Data.SportNutrition;
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.State;
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.User;
 import com.example.student.BSUIR.HealthyLifestyleBot.Database.Configs.DatabaseHandler;
 import com.example.student.BSUIR.HealthyLifestyleBot.Exception.RangeExceededException;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.BMICalculator;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.CaloriesBurnedCalculator;
+import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.DailyCalorieCalculator;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.HtmlSiteParser;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.StartMessage;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.InlineKeyboard;
@@ -45,6 +48,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private static final ResourceBundle localeLanguageJP = ResourceBundle.getBundle("application", new Locale("jp", "JP"));
     
     private State state;
+    private SportNutrition sportNutrition;
+    private Activity activity;
 
     private DatabaseHandler databaseHandler;
 
@@ -93,69 +98,20 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         switch (message.getText()){
             /* Обработка кнопок основного меню */
-            case "Show all user information ℹ" : {
-                nBundle = basicLanguageEN;
+            case "Show all user information ℹ" :
+            case "Показать всю информацию о пользователе ℹ":
+            case "すべてのユーザー情報を表示する ℹ": {
                 if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                 } else {
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                }
-                break;
-            }
-            case "Show available calculators \uD83D\uDDA9" : {
-                nBundle = basicLanguageEN;
-                if (!message.getChatId().equals(databaseHandler.getIdUser(message))) {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                    state = State.MENU;
-                    break;
-                } else {
-                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.calculatorList(nBundle);
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.menu")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
-                    break;
-                }
-            }
-            case "Show all types of sports nutrition \uD83C\uDFD0": {
-                nBundle = basicLanguageEN;
-                List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(nBundle);
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
-                state = State.SHOW_ALL_SPORT_NUTRITION;
-                break;
-            }
-            case "Change user data \uD83D\uDCC0": {
-                nBundle = basicLanguageEN;
-                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                } else {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.change")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("user.change"))).build());
-                    break;
-                }
-            }
-            case "Add user information ✅": {
-                nBundle = basicLanguageEN;
-                if (message.getChatId().equals(databaseHandler.getIdUser(message))) {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.exist")).build());
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                    state = State.MENU;
-                } else {
-                    registrationProcess = true;
-                    newUser = new User();
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.name")).build());
-                    state = State.ADD_USER_NAME;
                 }
                 break;
             }
 
-            case "Показать всю информацию о пользователе ℹ":{
-                nBundle = localeLanguageRU;
-                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                } else {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                }
-                break;
-            }
-            case "Показать доступные калькуляторы \uD83D\uDDA9":{
-                nBundle = localeLanguageRU;
+            case "Show available calculators \uD83D\uDDA9" :
+            case "Показать доступные калькуляторы \uD83D\uDDA9":
+            case "利用可能な計算機を表示する \uD83D\uDDA9": {
                 if (!message.getChatId().equals(databaseHandler.getIdUser(message))) {
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                     state = State.MENU;
@@ -165,77 +121,20 @@ public class TelegramBot extends TelegramLongPollingBot {
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.menu")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
                     break;
                 }
-            }
-            case "Изменить данные о пользователе \uD83D\uDCC0":{
-                nBundle = localeLanguageRU;
-                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                } else {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.change")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("user.change"))).build());
-                }
-                break;
-            }
-            case "Показать все типы спортивного питания \uD83C\uDFD0": {
-                nBundle = localeLanguageRU;
-                List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(nBundle);
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
-                state = State.SHOW_ALL_SPORT_NUTRITION;
-                break;
-            }
-            case "Добавить информацию о пользователе ✅" :{
-                nBundle = localeLanguageRU;
-                if (message.getChatId().equals(databaseHandler.getIdUser(message))) {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.exist")).build());
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                    state = State.MENU;
-                } else {
-                    registrationProcess = true;
-                    newUser = new User();
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.name")).build());
-                    state = State.ADD_USER_NAME;
-                }
-                break;
             }
 
-            case "すべてのユーザー情報を表示する ℹ":{
-                nBundle = localeLanguageJP;
-                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                } else {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                }
-                break;
-            }
-            case "利用可能な計算機を表示する \uD83D\uDDA9":{
-                nBundle = localeLanguageJP;
-                if (!message.getChatId().equals(databaseHandler.getIdUser(message))) {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                    state = State.MENU;
-                    break;
-                } else {
-                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.calculatorList(nBundle);
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.menu")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
-                    break;
-                }
-            }
-            case "ユーザーデータの変更 \uD83D\uDCC0":{
-                nBundle = localeLanguageJP;
-                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
-                } else {
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.change")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("user.change"))).build());
-                    break;
-                }
-            }
+            case "Show all types of sports nutrition \uD83C\uDFD0":
+            case "Показать все типы спортивного питания \uD83C\uDFD0":
             case "すべての種類のスポーツ栄養を表示する \uD83C\uDFD0": {
-                nBundle = localeLanguageJP;
                 List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(nBundle);
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
                 state = State.SHOW_ALL_SPORT_NUTRITION;
                 break;
             }
-            case "ユーザー情報を追加する ✅" :{
-                nBundle = localeLanguageJP;
+
+            case "Добавить информацию о пользователе ✅" :
+            case "ユーザー情報を追加する ✅" :
+            case "Add user information ✅": {
                 if (message.getChatId().equals(databaseHandler.getIdUser(message))) {
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.exist")).build());
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
@@ -247,6 +146,17 @@ public class TelegramBot extends TelegramLongPollingBot {
                     state = State.ADD_USER_NAME;
                 }
                 break;
+            }
+
+            case "Change user data \uD83D\uDCC0":
+            case "Изменить данные о пользователе \uD83D\uDCC0":
+            case "ユーザーデータの変更 \uD83D\uDCC0": {
+                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                } else {
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.change")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("user.change"))).build());
+                    break;
+                }
             }
 
             /* Изменение данных пользователя */
@@ -292,6 +202,49 @@ public class TelegramBot extends TelegramLongPollingBot {
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.change.diesease")).build());
                 break;
             }
+
+            /* Обработка калькулятора опр. суточную норму */
+            case "Минимальная активность":
+                case "Minimum activity":
+                    case "最小限の活動":{
+                        float data = DailyCalorieCalculator.calculateDailyCalorie(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"), Activity.MIN_ACTIVITY);
+                        log.info(String.valueOf(data));
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(DailyCalorieCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        break;
+                    }
+            case "Слабая активность":
+                case "Weak activity":
+                    case "弱い活動": {
+                        float data = DailyCalorieCalculator.calculateDailyCalorie(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"), Activity.LOW_ACTIVITY);
+                        log.info(String.valueOf(data));
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(DailyCalorieCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        break;
+                    }
+            case "Средняя активность":
+                case "Average activity":
+                    case "平均活動": {
+                        float data = DailyCalorieCalculator.calculateDailyCalorie(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"), Activity.NORMAL_ACTIVITY);
+                        log.info(String.valueOf(data));
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(DailyCalorieCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        break;
+                    }
+            case "Высокая активность":
+                case "High activity":
+                    case "高活動": {
+                        float data = DailyCalorieCalculator.calculateDailyCalorie(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"), Activity.HIGH_ACTIVITY);
+                        log.info(String.valueOf(data));
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(DailyCalorieCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        break;
+                    }
+            case "Экстра-активность":
+                case "Extra activity":
+                    case "課外活動": {
+                        float data = DailyCalorieCalculator.calculateDailyCalorie(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"), Activity.EXTRA_ACTIVITY);
+                        log.info(String.valueOf(data));
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(DailyCalorieCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        break;
+                    }
+
 
             /* Обработка о сообщении пользователя */
             default:
@@ -430,7 +383,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                         minutes = Integer.parseInt(message.getText());
                         state = State.MENU;
                         float data = CaloriesBurnedCalculator.calculateBurnedCalories(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), meters, minutes);
-                        System.out.println(data);
                         execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("Burned.info")).build());
                         Thread.sleep(5000);
                         execute(SendMessage.builder().chatId(message.getChatId().toString()).text(CaloriesBurnedCalculator.infoBurned(data, nBundle, meters, minutes)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
@@ -455,83 +407,86 @@ public class TelegramBot extends TelegramLongPollingBot {
         switch (value) {
             /* Выбор языка */
             case "ru" -> {
+                nBundle = localeLanguageRU;
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\bill.png"), message, this);
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(localeLanguageRU)).build());
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(localeLanguageRU.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(localeLanguageRU, localeLanguageRU.getString("menu.desc"))).build());
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(nBundle)).build());
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                 state = State.MENU;
             }
             case "en" -> {
+                nBundle = basicLanguageEN;
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\ricardo.png"), message, this);
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(basicLanguageEN)).build());
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguageEN.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(basicLanguageEN, basicLanguageEN.getString("menu.desc"))).build());
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(nBundle)).build());
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                 state = State.MENU;
             }
             case "jp" -> {
+                nBundle = localeLanguageJP;
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\van.png"), message, this);
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(localeLanguageJP)).build());
-                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(localeLanguageJP.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(localeLanguageJP, localeLanguageJP.getString("menu.desc"))).build());
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(nBundle)).build());
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                 state = State.MENU;
             }
             /* Вывод спортивного питания */
             case "sp_amino_acids" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\amino_acid.png"), message, this, nBundle.getString("sport.nutrition.amino_acids"));
-                HtmlSiteParser.parseSportNutritionInformation(State.AMINO_ACIDS, this, message, nBundle);
-                state = State.AMINO_ACIDS;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.AMINO_ACIDS, this, message, nBundle);
+                sportNutrition = SportNutrition.AMINO_ACIDS;
             }
             case "sp_anticatabolic" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\anticabolic.png"), message, this, nBundle.getString("sport.nutrition.anticatabolic"));
-                HtmlSiteParser.parseSportNutritionInformation(State.ANTICATABOLIC, this, message, nBundle);
-                state = State.ANTICATABOLIC;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ANTICATABOLIC, this, message, nBundle);
+                sportNutrition = SportNutrition.ANTICATABOLIC;
             }
             case "sp_en_drink" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\energy_drink.png"), message, this, nBundle.getString("sport.nutrition.energy.drink"));
-                HtmlSiteParser.parseSportNutritionInformation(State.ENERGY_DRINK, this, message, nBundle);
-                state = State.ENERGY_DRINK;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ENERGY_DRINK, this, message, nBundle);
+                sportNutrition = SportNutrition.ENERGY_DRINK;
             }
             case "sp_creatin" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\creatine.png"), message, this, nBundle.getString("sport.nutrition.creatin "));
-                HtmlSiteParser.parseSportNutritionInformation(State.CREATIN, this, message, nBundle);
-                state = State.CREATIN;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.CREATIN, this, message, nBundle);
+                sportNutrition = SportNutrition.CREATIN;
             }
             case "sp_gr_hormone" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\booster.png"), message, this, nBundle.getString("sport.nutrition.growth_hormone"));
-                HtmlSiteParser.parseSportNutritionInformation(State.GROWTH_HORMONE, this, message, nBundle);
-                state = State.GROWTH_HORMONE;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.GROWTH_HORMONE, this, message, nBundle);
+                sportNutrition = SportNutrition.GROWTH_HORMONE;
             }
             case "sp_fat_burners" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\fat_burner.png"), message, this, nBundle.getString("sport.nutrition.fat_burners"));
-                HtmlSiteParser.parseSportNutritionInformation(State.FAT_BURNERS, this, message, nBundle);
-                state = State.FAT_BURNERS;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.FAT_BURNERS, this, message, nBundle);
+                sportNutrition = SportNutrition.FAT_BURNERS;
             }
             case "sp_collagen" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\collagen.png"), message, this, nBundle.getString("sport.nutrition.collagen"));
-                HtmlSiteParser.parseSportNutritionInformation(State.COLLAGEN, this, message, nBundle);
-                state = State.COLLAGEN;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.COLLAGEN, this, message, nBundle);
+                sportNutrition = SportNutrition.COLLAGEN;
             }
             case "sp_glucosamine" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\glucosamine.png"), message, this, nBundle.getString("sport.nutrition.glucosamine"));
-                HtmlSiteParser.parseSportNutritionInformation(State.GLUCOSAMINE, this, message, nBundle);
-                state = State.GLUCOSAMINE;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.GLUCOSAMINE, this, message, nBundle);
+                sportNutrition = SportNutrition.GLUCOSAMINE;
             }
             case "sp_isotonic" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\isotonic.png"), message, this, nBundle.getString("sport.nutrition.isotonic"));
-                HtmlSiteParser.parseSportNutritionInformation(State.ISOTONIC, this, message, nBundle);
-                state = State.ISOTONIC;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ISOTONIC, this, message, nBundle);
+                sportNutrition = SportNutrition.ISOTONIC;
             }
             case "sp_vitamine_comp" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\vitamine.png"), message, this, nBundle.getString("sport.nutrition.vitamin_complexes"));
-                HtmlSiteParser.parseSportNutritionInformation(State.VITAMINE_COMPLEX, this, message, nBundle);
-                state = State.VITAMINE_COMPLEX;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.VITAMINE_COMPLEX, this, message, nBundle);
+                sportNutrition = SportNutrition.VITAMINE_COMPLEX;
             }
             case "sp_testosterone" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\testosterone.png"), message, this, nBundle.getString("sport.nutrition.testosterone"));
-                HtmlSiteParser.parseSportNutritionInformation(State.TESTOSTERONE, this, message, nBundle);
-                state = State.TESTOSTERONE;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.TESTOSTERONE, this, message, nBundle);
+                sportNutrition = SportNutrition.TESTOSTERONE;
             }
             case "sp_meal_replace" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\meal.png"), message, this, nBundle.getString("sport.nutrition.meal_replacemen"));
-                HtmlSiteParser.parseSportNutritionInformation(State.MEAL_REPLACE, this, message, nBundle);
-                state = State.MEAL_REPLACE;
+                HtmlSiteParser.parseSportNutritionInformation(SportNutrition.MEAL_REPLACE, this, message, nBundle);
+                sportNutrition = SportNutrition.MEAL_REPLACE;
             }
 
             case "return" -> {
@@ -555,12 +510,17 @@ public class TelegramBot extends TelegramLongPollingBot {
                 state = State.CALORIES_BURNED_CALCULATOR_METERS;
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("Burned.add_meters")).build());
             }
+            case "Daily Calorie Calculator" -> {
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("Daily.info")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("Daily.menu"))).build());
+            }
         }
     }
 
     @SneakyThrows
     private void handleCommand(Message message) {
-
+        if (nBundle == null){
+            nBundle = basicLanguageEN;
+        }
         Optional<MessageEntity> commandEntity = message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
         if (commandEntity.isPresent()) {
             String command = message.getText().substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
@@ -568,16 +528,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (command) {
                 case "/start": {
                     List<List<InlineKeyboardButton>> languageButton = InlineKeyboard.languageList();
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(resourceBundle.getString("application.language")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(languageButton).build()).build());
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("application.language")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(languageButton).build()).build());
                     break;
                 }
                 case "/get_all_calculators": {
-                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.calculatorList(basicLanguageEN);
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguageEN.getString("calculator.menu")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
+                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.calculatorList(nBundle);
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.menu")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
                     break;
                 }
                 case "/show_information_about_user": {
-                    nBundle = basicLanguageEN;
+
                     if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
                         execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                     } else {
@@ -586,12 +546,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 }
                 case "/show_sport_nutritions": {
-                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(basicLanguageEN);
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(basicLanguageEN.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
+                    List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(nBundle);
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
                     break;
                 }
                 case "/set_information_about_user": {
-                    nBundle = basicLanguageEN;
+
                     if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
                         execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                     } else {
@@ -600,7 +560,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
                 }
                 case "/add_information_about_user" :{
-                    nBundle = basicLanguageEN;
                     if (message.getChatId().equals(databaseHandler.getIdUser(message))) {
                         execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.exist")).build());
                         execute(SendMessage.builder().chatId(message.getChatId().toString()).text(databaseHandler.showUserData(message, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());

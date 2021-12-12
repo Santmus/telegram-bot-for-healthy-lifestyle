@@ -48,6 +48,20 @@ public class KeyboardMarkUp {
             replyKeyboardMarkup.setKeyboard(keyboardRows);
             return replyKeyboardMarkup;
         }
+        else if (nameButton.equals(resourceBundle.getString("Daily.menu"))) {
+            keyboardFirstRow.add(resourceBundle.getString("Daily.btn1"));
+            keyboardFirstRow.add(resourceBundle.getString("Daily.btn2"));
+            keyboardFirstRow.add(resourceBundle.getString("Daily.btn3"));
+
+            keyboardSecondRow.add(resourceBundle.getString("Daily.btn4"));
+            keyboardSecondRow.add(resourceBundle.getString("Daily.btn5"));
+
+            keyboardRows.add(keyboardFirstRow);
+            keyboardRows.add(keyboardSecondRow);
+
+            replyKeyboardMarkup.setKeyboard(keyboardRows);
+            return replyKeyboardMarkup;
+        }
         return replyKeyboardMarkup;
     }
 

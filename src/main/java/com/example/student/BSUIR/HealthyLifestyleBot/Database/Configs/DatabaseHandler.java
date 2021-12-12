@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.sql.*;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Slf4j
@@ -91,6 +92,7 @@ public class DatabaseHandler {
 
         ResultSet resultSet = preparedStatement.executeQuery();
         resultSet.next();
+
         return resultSet.getFloat(1);
     }
 
