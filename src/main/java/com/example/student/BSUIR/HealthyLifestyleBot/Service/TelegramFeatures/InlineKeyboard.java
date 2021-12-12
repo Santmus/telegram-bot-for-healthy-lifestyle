@@ -53,4 +53,13 @@ public class InlineKeyboard {
         return lists;
     }
 
+    public static List<List<InlineKeyboardButton>> dowloadSportNutritionList(ResourceBundle resourceBundle) {
+        lists = new ArrayList<>(3);
+        lists.add(List.of(InlineKeyboardButton.builder().text(".TXT").callbackData("txt_file").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("dowload.message")).callbackData("message_list").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.return")).callbackData("return_sp").build()));
+
+        return lists;
+    }
+
 }

@@ -23,66 +23,54 @@ import java.util.ResourceBundle;
 public class HtmlSiteParser {
 
     public static void parseSportNutritionInformation(SportNutrition sportNutrition, TelegramBot telegramBot, Message message, ResourceBundle localeLanguage) {
-        switch (sportNutrition){
-            case AMINO_ACIDS:{
+        switch (sportNutrition) {
+            case AMINO_ACIDS -> {
                 log.info("User of telegram bot choose amino acids");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/amino-acids/", telegramBot, message, localeLanguage);
-                break;
             }
-            case ANTICATABOLIC: {
+            case ANTICATABOLIC -> {
                 log.info("User of telegram bot choose anticatabolic");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/blokiratory-kortizola/", telegramBot, message, localeLanguage);
-                break;
             }
-            case CREATIN:{
+            case CREATIN -> {
                 log.info("User of telegram bot choose creatine");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/carnitine/", telegramBot, message, localeLanguage);
-                break;
             }
-            case GROWTH_HORMONE:{
+            case GROWTH_HORMONE -> {
                 log.info("User of telegram bot choose growth hormone");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/vyrabotka-gormona-rosta/", telegramBot, message, localeLanguage);
-                break;
             }
-            case ENERGY_DRINK:{
+            case ENERGY_DRINK -> {
                 log.info("User of telegram bot choose energy drink");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/energetiki/", telegramBot, message, localeLanguage);
-                break;
             }
-            case FAT_BURNERS:{
+            case FAT_BURNERS -> {
                 log.info("User of telegram bot choose fat burners");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/fat-burners/", telegramBot, message, localeLanguage);
-                break;
             }
-            case COLLAGEN:{
+            case COLLAGEN -> {
                 log.info("User of telegram bot choose collagen");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/kollagen/", telegramBot, message, localeLanguage);
-                break;
             }
-            case GLUCOSAMINE:{
+            case GLUCOSAMINE -> {
                 log.info("User of telegram bot choose glucosamine");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/glukozamin-hondroitin/", telegramBot, message, localeLanguage);
-                break;
             }
-            case ISOTONIC:{
+            case ISOTONIC -> {
                 log.info("User of telegram bot choose isotonic");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/izotoniki/", telegramBot, message, localeLanguage);
-                break;
             }
-            case VITAMINE_COMPLEX:{
+            case VITAMINE_COMPLEX -> {
                 log.info("User of telegram bot choose vitamin complex");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/vitaminy-i-mineraly/", telegramBot, message, localeLanguage);
-                break;
             }
-            case TESTOSTERONE:{
+            case TESTOSTERONE -> {
                 log.info("User of telegram bot choose testosterone");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/povyshenie-testosterona/", telegramBot, message, localeLanguage);
-                break;
             }
-            case MEAL_REPLACE:{
+            case MEAL_REPLACE -> {
                 log.info("User of telegram bot choose meal replace");
                 informationAboutSportNutrition("https://sportivnoepitanie.ru/zameniteli-pitaniya/", telegramBot, message, localeLanguage);
-                break;
             }
         }
     }
@@ -109,7 +97,7 @@ public class HtmlSiteParser {
 
             try {
                 telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(element.text()).build());
-                Thread.sleep(2000);
+                // Thread.sleep(2000);
             } catch (TelegramApiException e) {
                 log.error("Telegram bot can`t send message");
                 try {

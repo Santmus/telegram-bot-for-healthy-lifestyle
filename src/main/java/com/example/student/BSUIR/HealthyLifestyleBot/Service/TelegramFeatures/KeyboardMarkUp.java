@@ -62,6 +62,20 @@ public class KeyboardMarkUp {
             replyKeyboardMarkup.setKeyboard(keyboardRows);
             return replyKeyboardMarkup;
         }
+        else if (nameButton.equals(resourceBundle.getString("dowload.number"))){
+            keyboardFirstRow.add("1");
+            keyboardFirstRow.add("2");
+            keyboardFirstRow.add("5");
+
+            keyboardSecondRow.add("10");
+            keyboardSecondRow.add("20");
+
+            keyboardRows.add(keyboardFirstRow);
+            keyboardRows.add(keyboardSecondRow);
+
+            replyKeyboardMarkup.setKeyboard(keyboardRows);
+            return replyKeyboardMarkup;
+        }
         return replyKeyboardMarkup;
     }
 

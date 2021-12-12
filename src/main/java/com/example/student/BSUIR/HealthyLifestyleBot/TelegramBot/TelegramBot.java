@@ -9,6 +9,7 @@ import com.example.student.BSUIR.HealthyLifestyleBot.Exception.RangeExceededExce
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.BMICalculator;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.CaloriesBurnedCalculator;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.DailyCalorieCalculator;
+import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.DowloadData;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.HtmlSiteParser;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.StartMessage;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.InlineKeyboard;
@@ -248,6 +249,27 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             /* Обработка о сообщении пользователя */
             default:
+                /*Вывод количество продуктов на экран*/
+                if (message.getText().equals("1") && (state.equals(State.DOWLOAD_TXT_LIST) || state.equals(State.DOWLOAD_SHOW_LIST))) {
+                    DowloadData.findProduct(sportNutrition, 1, state, this, message, nBundle);
+                    state = State.MENU;
+                }
+                if (message.getText().equals("2") && (state.equals(State.DOWLOAD_TXT_LIST) || state.equals(State.DOWLOAD_SHOW_LIST))) {
+                    DowloadData.findProduct(sportNutrition, 2, state, this, message, nBundle);
+                    state = State.MENU;
+                }
+                if (message.getText().equals("5") && (state.equals(State.DOWLOAD_TXT_LIST) || state.equals(State.DOWLOAD_SHOW_LIST))) {
+                    DowloadData.findProduct(sportNutrition, 5, state, this, message, nBundle);
+                    state = State.MENU;
+                }
+                if (message.getText().equals("10") && (state.equals(State.DOWLOAD_TXT_LIST) || state.equals(State.DOWLOAD_SHOW_LIST))) {
+                    DowloadData.findProduct(sportNutrition, 10, state, this, message, nBundle);
+                    state = State.MENU;
+                }
+                if (message.getText().equals("20") && (state.equals(State.DOWLOAD_TXT_LIST) || state.equals(State.DOWLOAD_SHOW_LIST))) {
+                    DowloadData.findProduct(sportNutrition, 20, state, this, message, nBundle);
+                    state = State.MENU;
+                }
                 /* Изменение параметра пользователя */
                 if (state.equals(State.SET_USER_NAME)) {
                     log.info("New user name: " + message.getText());
@@ -404,6 +426,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String value = callbackQuery.getData();
         log.info("Message is: " + message);
         log.info("Bot get callback:  " + value);
+        log.info("Bot has state: " + state);
         switch (value) {
             /* Выбор языка */
             case "ru" -> {
@@ -432,73 +455,91 @@ public class TelegramBot extends TelegramLongPollingBot {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\amino_acid.png"), message, this, nBundle.getString("sport.nutrition.amino_acids"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.AMINO_ACIDS, this, message, nBundle);
                 sportNutrition = SportNutrition.AMINO_ACIDS;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_anticatabolic" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\anticabolic.png"), message, this, nBundle.getString("sport.nutrition.anticatabolic"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ANTICATABOLIC, this, message, nBundle);
                 sportNutrition = SportNutrition.ANTICATABOLIC;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_en_drink" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\energy_drink.png"), message, this, nBundle.getString("sport.nutrition.energy.drink"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ENERGY_DRINK, this, message, nBundle);
                 sportNutrition = SportNutrition.ENERGY_DRINK;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_creatin" -> {
-                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\creatine.png"), message, this, nBundle.getString("sport.nutrition.creatin "));
+                PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\creatine.png"), message, this, nBundle.getString("sport.nutrition.creatin"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.CREATIN, this, message, nBundle);
                 sportNutrition = SportNutrition.CREATIN;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_gr_hormone" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\booster.png"), message, this, nBundle.getString("sport.nutrition.growth_hormone"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.GROWTH_HORMONE, this, message, nBundle);
                 sportNutrition = SportNutrition.GROWTH_HORMONE;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_fat_burners" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\fat_burner.png"), message, this, nBundle.getString("sport.nutrition.fat_burners"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.FAT_BURNERS, this, message, nBundle);
                 sportNutrition = SportNutrition.FAT_BURNERS;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_collagen" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\collagen.png"), message, this, nBundle.getString("sport.nutrition.collagen"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.COLLAGEN, this, message, nBundle);
                 sportNutrition = SportNutrition.COLLAGEN;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_glucosamine" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\glucosamine.png"), message, this, nBundle.getString("sport.nutrition.glucosamine"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.GLUCOSAMINE, this, message, nBundle);
                 sportNutrition = SportNutrition.GLUCOSAMINE;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_isotonic" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\isotonic.png"), message, this, nBundle.getString("sport.nutrition.isotonic"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.ISOTONIC, this, message, nBundle);
                 sportNutrition = SportNutrition.ISOTONIC;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_vitamine_comp" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\vitamine.png"), message, this, nBundle.getString("sport.nutrition.vitamin_complexes"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.VITAMINE_COMPLEX, this, message, nBundle);
                 sportNutrition = SportNutrition.VITAMINE_COMPLEX;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_testosterone" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\testosterone.png"), message, this, nBundle.getString("sport.nutrition.testosterone"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.TESTOSTERONE, this, message, nBundle);
                 sportNutrition = SportNutrition.TESTOSTERONE;
+                state = State.DOWLOAD_LIST;
             }
             case "sp_meal_replace" -> {
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\meal.png"), message, this, nBundle.getString("sport.nutrition.meal_replacemen"));
                 HtmlSiteParser.parseSportNutritionInformation(SportNutrition.MEAL_REPLACE, this, message, nBundle);
                 sportNutrition = SportNutrition.MEAL_REPLACE;
+                state = State.DOWLOAD_LIST;
             }
 
+            /* Обработка клавиши назад */
             case "return" -> {
                 List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.sportNutritionList(nBundle);
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("sport.nutrition.menu") + ":").replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
                 state = State.SHOW_ALL_SPORT_NUTRITION;
             }
-
             case "return_main_menu" -> {
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                 state = State.MENU;
             }
+            case "return_sp" -> {
+                List<List<InlineKeyboardButton>> listOfHandler = InlineKeyboard.functionalOfSportNutritionList(resourceBundle);
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(resourceBundle.getString("sport.nutrition.menu.1")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfHandler).build()).build());
+                state = State.FUNC_ABOUT_SPORT_NUTRITION;
+            }
+
             /* Обработка калькулятора */
             case "BMI Calculator" -> {
                 float data = BMICalculator.calculateBMI(databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_height")) * 10000;
@@ -512,6 +553,20 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
             case "Daily Calorie Calculator" -> {
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("Daily.info")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("Daily.menu"))).build());
+            }
+            case "dowload_list" -> {
+                List<List<InlineKeyboardButton>> listOfCalculator = InlineKeyboard.dowloadSportNutritionList(nBundle);
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("dowload.text")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(listOfCalculator).build()).build());
+                state = State.DOWLOAD_LIST;
+            } // добавить назад
+            case "txt_file" -> {
+                state = State.DOWLOAD_TXT_LIST;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("dowload.number")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("dowload.number"))).build());
+
+            }
+            case "message_list" -> {
+                state = State.DOWLOAD_SHOW_LIST;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("dowload.number")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("dowload.number"))).build());
             }
         }
     }
