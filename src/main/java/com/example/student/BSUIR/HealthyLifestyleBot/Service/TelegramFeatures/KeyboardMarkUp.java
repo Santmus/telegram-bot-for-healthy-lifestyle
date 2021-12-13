@@ -20,6 +20,7 @@ public class KeyboardMarkUp {
         if (nameButton.equals(resourceBundle.getString("menu.desc"))) {
             keyboardFirstRow.add(resourceBundle.getString("menu.all.info") + "\t\u2139");
             keyboardFirstRow.add(resourceBundle.getString("menu.show.calc") + "\t\uD83D\uDDA9");
+            keyboardFirstRow.add(resourceBundle.getString("user.changer") + "\t\uD83D\uDDE3");
 
             keyboardSecondRow.add(resourceBundle.getString("menu.upd.info") + "\t\uD83D\uDCC0");
             keyboardSecondRow.add(resourceBundle.getString("menu.show.sp") + "\t\uD83C\uDFD0");

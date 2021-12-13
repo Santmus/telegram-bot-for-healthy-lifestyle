@@ -160,6 +160,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
 
+            case "Изменить язык \uD83D\uDDE3":
+            case "Change the language \uD83D\uDDE3":
+            case "言語を変更する \uD83D\uDDE3":{
+                List<List<InlineKeyboardButton>> languageButton = InlineKeyboard.languageList();
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.changer1")).replyMarkup(InlineKeyboardMarkup.builder().keyboard(languageButton).build()).build());
+                break;
+            }
+
             /* Изменение данных пользователя */
             case "Имя":
                 case "Name":

@@ -97,7 +97,7 @@ public class HtmlSiteParser {
 
             try {
                 telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(element.text()).build());
-                // Thread.sleep(2000);
+                Thread.sleep(2000);
             } catch (TelegramApiException e) {
                 log.error("Telegram bot can`t send message");
                 try {
