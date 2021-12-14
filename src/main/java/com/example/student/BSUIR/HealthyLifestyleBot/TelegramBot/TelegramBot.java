@@ -6,9 +6,7 @@ import com.example.student.BSUIR.HealthyLifestyleBot.Data.State;
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.User;
 import com.example.student.BSUIR.HealthyLifestyleBot.Database.Configs.DatabaseHandler;
 import com.example.student.BSUIR.HealthyLifestyleBot.Exception.RangeExceededException;
-import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.BMICalculator;
-import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.CaloriesBurnedCalculator;
-import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.DailyCalorieCalculator;
+import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.Calculators.*;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.DowloadData;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.HtmlSiteParser;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization.StartMessage;
@@ -40,6 +38,7 @@ import java.util.ResourceBundle;
 @Setter
 @Slf4j
 public class TelegramBot extends TelegramLongPollingBot {
+
 
     private final ResourceBundle resourceBundle;
     private ResourceBundle nBundle;
@@ -156,8 +155,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.isnot_exist")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
                 } else {
                     execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.change")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("user.change"))).build());
-                    break;
                 }
+                break;
             }
 
             case "Изменить язык \uD83D\uDDE3":
@@ -210,6 +209,36 @@ public class TelegramBot extends TelegramLongPollingBot {
                 state = State.SET_USER_DISEASE;
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("user.change.diesease")).build());
                 break;
+            }
+
+            case "Астеническое (тонкокостное)":
+                case "Asthenic (thin bone)":
+                    case "Asthenic（薄い骨）":{
+                        state = State.WEIGHT_LEAN;
+                        float data = IdealWeightCalculator.calculateIdealWeight(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_age"), state);
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(IdealWeightCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        state = State.MENU;
+                        break;
+            }
+
+            case "Нормостеническое (нормальное)":
+                case "Normosthenic (normal)":
+                    case "Normosthenic（通常）":{
+                        state = State.WEIGHT_NORMAL;
+                        float data = IdealWeightCalculator.calculateIdealWeight(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_age"), state);
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(IdealWeightCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        state = State.MENU;
+                        break;
+            }
+
+            case "Гиперстеническое (ширококостное)":
+                case "Hypersthenic (broad-boned)":
+                    case "Hypersthenic（骨太）": {
+                        state = State.WEIGHT_FAT;
+                        float data = IdealWeightCalculator.calculateIdealWeight(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_age"), state);
+                        execute(SendMessage.builder().chatId(message.getChatId().toString()).text(IdealWeightCalculator.infoBurned(data, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                        state = State.MENU;
+                        break;
             }
 
             /* Обработка калькулятора опр. суточную норму */
@@ -439,6 +468,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             /* Выбор языка */
             case "ru" -> {
                 nBundle = localeLanguageRU;
+                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                    Thread.sleep(2000);
+                }
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\bill.png"), message, this);
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(nBundle)).build());
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
@@ -446,6 +479,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
             case "en" -> {
                 nBundle = basicLanguageEN;
+                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                    Thread.sleep(2000);
+                }
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\ricardo.png"), message, this);
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(nBundle)).build());
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
@@ -453,6 +490,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
             case "jp" -> {
                 nBundle = localeLanguageJP;
+                if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                    Thread.sleep(2000);
+                }
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\van.png"), message, this);
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(StartMessage.greetingMessage(nBundle)).build());
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("menu.desc")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
@@ -575,6 +616,24 @@ public class TelegramBot extends TelegramLongPollingBot {
             case "message_list" -> {
                 state = State.DOWLOAD_SHOW_LIST;
                 execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("dowload.number")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("dowload.number"))).build());
+            }
+
+            case "Basic Metabolism Calculator" -> {
+                float firstAlgorithmMetabolismMaffin = BasicMetabolismCalculator.calculateBasicMetabolismMaffin(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"));
+                float secondAlgorithmMetabolismXarris = BasicMetabolismCalculator.calculateBasicMetabolismXarris(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"));
+                float thirdAlgorithmMetabolismVenutto = BasicMetabolismCalculator.calculateBasicMetabolismVenutto(databaseHandler.getDataSizePerson(message, "user_height"), databaseHandler.getDataSizePerson(message, "user_weight"), databaseHandler.getDataSizePerson(message, "user_age"));
+
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.Metabolism.info")).build());
+                Thread.sleep(5000);
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.Metabolism.desc")).text(BasicMetabolismCalculator.infoBurned(firstAlgorithmMetabolismMaffin, secondAlgorithmMetabolismXarris, thirdAlgorithmMetabolismVenutto, nBundle)).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+            }
+
+            case "Ideal Weight Calculator" -> {
+                state = State.BODY_INFO;
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.Ideal.weight_info")).build());
+                Thread.sleep(2000);
+                execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("calculator.Ideal.enter_body_type")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("calculator.Ideal.enter_body_type"))).build());
+
             }
         }
     }

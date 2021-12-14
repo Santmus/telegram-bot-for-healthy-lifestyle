@@ -76,6 +76,15 @@ public class KeyboardMarkUp {
 
             replyKeyboardMarkup.setKeyboard(keyboardRows);
             return replyKeyboardMarkup;
+        } else if (nameButton.equals(resourceBundle.getString("calculator.Ideal.enter_body_type"))) {
+            keyboardFirstRow.add(resourceBundle.getString("calculator.Ideal.weight_smart"));
+            keyboardFirstRow.add(resourceBundle.getString("calculator.Ideal.weight_normal"));
+            keyboardFirstRow.add(resourceBundle.getString("calculator.Ideal.weight_fat"));
+
+            keyboardRows.add(keyboardFirstRow);
+
+            replyKeyboardMarkup.setKeyboard(keyboardRows);
+            return replyKeyboardMarkup;
         }
         return replyKeyboardMarkup;
     }

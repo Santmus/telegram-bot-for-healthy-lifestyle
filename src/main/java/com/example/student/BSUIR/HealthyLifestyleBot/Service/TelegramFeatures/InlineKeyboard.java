@@ -23,6 +23,8 @@ public class InlineKeyboard {
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.BMI")).callbackData("BMI Calculator").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.Daily.Calories")).callbackData("Daily Calorie Calculator").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.Burned.Calories")).callbackData("Calories Burned Calculator").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.Metabolism")).callbackData("Basic Metabolism Calculator").build()));
+        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("calculator.Ideal.Weight")).callbackData("Ideal Weight Calculator").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.return")).callbackData("return_main_menu").build()));
         return lists;
     }
@@ -48,7 +50,7 @@ public class InlineKeyboard {
     public static List<List<InlineKeyboardButton>> functionalOfSportNutritionList(ResourceBundle resourceBundle) {
         lists = new ArrayList<>(3);
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.dowload_list")).callbackData("dowload_list").build()));
-        lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.random_product")).callbackData("random_product").build()));
+        // lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.random_product")).callbackData("random_product").build()));
         lists.add(List.of(InlineKeyboardButton.builder().text(resourceBundle.getString("sport.nutrition.return")).callbackData("return").build()));
         return lists;
     }
