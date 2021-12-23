@@ -3,8 +3,10 @@ package com.example.student.BSUIR.HealthyLifestyleBot.Service.Realization;
 import com.example.student.BSUIR.HealthyLifestyleBot.Data.SportNutrition;
 import com.example.student.BSUIR.HealthyLifestyleBot.Service.TelegramFeatures.InlineKeyboard;
 import com.example.student.BSUIR.HealthyLifestyleBot.TelegramBot.TelegramBot;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +18,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 @Slf4j
@@ -96,8 +100,19 @@ public class HtmlSiteParser {
         for (Element element : listInfo.select("p")) {
 
             try {
-                telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(element.text()).build());
-                Thread.sleep(2000);
+                if (ResourceBundle.getBundle("application", new Locale("en", "EN")).equals(resourceBundle)) {
+
+                    telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(Translator.translate("ru", "en", element.text())).build());
+                    Thread.sleep(2000);
+                }
+                else if (ResourceBundle.getBundle("application", new Locale("jp", "JP")).equals(resourceBundle)){
+                    telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(Translator.translate("ru", "en", element.text())).build());
+                    Thread.sleep(2000);
+                }
+                else if (ResourceBundle.getBundle("application", new Locale("ru", "RU")).equals(resourceBundle)){
+                    telegramBot.execute(SendMessage.builder().chatId(message.getChatId().toString()).text(element.text()).build());
+                    Thread.sleep(2000);
+                }
             } catch (TelegramApiException e) {
                 log.error("Telegram bot can`t send message");
                 try {

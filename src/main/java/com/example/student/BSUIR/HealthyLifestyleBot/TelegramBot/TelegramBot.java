@@ -469,7 +469,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             case "ru" -> {
                 nBundle = localeLanguageRU;
                 if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).build());
                     Thread.sleep(2000);
                 }
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\bill.png"), message, this);
@@ -480,7 +480,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             case "en" -> {
                 nBundle = basicLanguageEN;
                 if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).build());
                     Thread.sleep(2000);
                 }
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\ricardo.png"), message, this);
@@ -491,7 +491,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             case "jp" -> {
                 nBundle = localeLanguageJP;
                 if (!message.getChatId().equals(databaseHandler.getIdUser(message))){
-                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).replyMarkup(KeyboardMarkUp.initButtons(nBundle, nBundle.getString("menu.desc"))).build());
+                    execute(SendMessage.builder().chatId(message.getChatId().toString()).text(nBundle.getString("auth.create")).build());
                     Thread.sleep(2000);
                 }
                 PhotoSender.sendPhoto(new File("src\\main\\java\\pictures\\van.png"), message, this);
